@@ -6,20 +6,21 @@
  * - Implement search/filter jika diperlukan
  * - Handle loading dan error states
  */
-
+import { redirect } from "next/navigation"
 export default function Home() {
-  return (
-    <div className="min-h-screen">
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Blog App Challenge</h1>
+   redirect("/blogs")
+  // return (
+  //   <div className="min-h-screen">
+  //     <main className="container mx-auto px-4 py-8">
+  //       <h1 className="text-3xl font-bold mb-8">Blog App Challenge</h1>
         
-        {/* TODO: Implement blog posts list here */}
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            Mulai implementasi homepage di sini sesuai dengan design Figma!
-          </p>
-        </div>
-      </main>
-    </div>
-  );
+  //       {/* TODO: Implement blog posts list here */}
+  //       <div className="space-y-4">
+  //         <p className="text-gray-600">
+  //           Mulai implementasi homepage di sini sesuai dengan design Figma!
+  //         </p>
+  //       </div>
+  //     </main>
+  //   </div>
+  // );
 }
