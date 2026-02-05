@@ -32,7 +32,7 @@ export default function Header() {
           className="flex items-center gap-2 shrink-0"
         >
           <Image
-            src="/logo.png"
+            src="/Logo.png"
             alt="Logo"
             width={120}
             height={32}
