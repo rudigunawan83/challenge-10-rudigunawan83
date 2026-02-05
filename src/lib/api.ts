@@ -3,45 +3,93 @@
  * Helper functions untuk fetch data dari backend API
  */
 
-import type { BlogPost, PaginatedResponse } from "@/types/blog"
+import type {
+  BlogPost,
+  PaginatedResponse,
+} from "@/types/blog"
+
+/* =====================================================
+   BASE URL
+===================================================== */
 
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL
 
 if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined")
+  throw new Error(
+    "NEXT_PUBLIC_API_BASE_URL is not defined"
+  )
 }
 
 /* =====================================================
-   SAFE FETCH HELPER
+   RESPONSE PARSER
+===================================================== */
+
+async function parseResponse(res: Response) {
+  const text = await res.text()
+  if (!text) return null
+  try {
+    return JSON.parse(text)
+  } catch {
+    throw new Error("Invalid server response")
+  }
+}
+
+/* =====================================================
+   JSON FETCH
 ===================================================== */
 
 export async function fetchAPI<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {}),
-    },
-  })
-
-  const text = await res.text()
-
-  let data: any = null
-  if (text) {
-    try {
-      data = JSON.parse(text)
-    } catch {
-      throw new Error("Invalid server response")
+  const res = await fetch(
+    `${API_BASE_URL}${endpoint}`,
+    {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(options?.headers || {}),
+      },
     }
-  }
+  )
+
+  const data = await parseResponse(res)
 
   if (!res.ok) {
     throw new Error(
-      data?.message || `API Error ${res.status}`
+      data?.message ||
+        `API Error ${res.status}`
+    )
+  }
+
+  return data
+}
+
+/* =====================================================
+   MULTIPART FETCH
+===================================================== */
+
+export async function fetchMultipart<T>(
+  endpoint: string,
+  options: RequestInit
+): Promise<T> {
+  const res = await fetch(
+    `${API_BASE_URL}${endpoint}`,
+    {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+      },
+    }
+  )
+
+  const data = await parseResponse(res)
+
+  if (!res.ok) {
+    throw new Error(
+      data?.message ||
+        `API Error ${res.status}`
     )
   }
 
@@ -52,7 +100,7 @@ export async function fetchAPI<T>(
    AUTH
 ===================================================== */
 
-export async function registerUser(payload: {
+export function registerUser(payload: {
   name: string
   username: string
   email: string
@@ -64,7 +112,7 @@ export async function registerUser(payload: {
   })
 }
 
-export async function loginUser(payload: {
+export function loginUser(payload: {
   email: string
   password: string
 }) {
@@ -81,7 +129,7 @@ export async function loginUser(payload: {
    POSTS (LIST)
 ===================================================== */
 
-export async function getRecommendedPosts(
+export function getRecommendedPosts(
   page = 1,
   limit = 10
 ): Promise<PaginatedResponse<BlogPost>> {
@@ -90,7 +138,7 @@ export async function getRecommendedPosts(
   )
 }
 
-export async function getMostLikedPosts(
+export function getMostLikedPosts(
   page = 1,
   limit = 5
 ): Promise<PaginatedResponse<BlogPost>> {
@@ -99,7 +147,7 @@ export async function getMostLikedPosts(
   )
 }
 
-export async function searchPosts(
+export function searchPosts(
   query: string,
   page = 1,
   limit = 10
@@ -112,20 +160,100 @@ export async function searchPosts(
 }
 
 /* =====================================================
-   USER PROFILE
+   POSTS (CRUD)
+===================================================== */
+
+export function createPost(
+  formData: FormData
+): Promise<BlogPost> {
+  const token = localStorage.getItem(
+    "access_token"
+  )
+  if (!token)
+    throw new Error("Unauthorized")
+
+  return fetchMultipart("/posts", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  })
+}
+
+export function updatePost(
+  postId: number,
+  formData: FormData
+): Promise<{ id: number }> {
+  const token = localStorage.getItem(
+    "access_token"
+  )
+  if (!token)
+    throw new Error("Unauthorized")
+
+  return fetchMultipart(
+    `/posts/${postId}`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    }
+  )
+}
+
+export function deletePost(
+  postId: number
+): Promise<{ success: boolean }> {
+  const token = localStorage.getItem(
+    "access_token"
+  )
+  if (!token)
+    throw new Error("Unauthorized")
+
+  return fetchAPI(`/posts/${postId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+/* =====================================================
+   POST DETAIL (❗TIDAK DIUBAH)
+===================================================== */
+
+export function getPostById(
+  id: number
+): Promise<BlogPost> {
+  return fetchAPI(`/posts/${id}`)
+}
+
+/* =====================================================
+   PROFILE
 ===================================================== */
 
 export type UserProfile = {
   id: number
   name: string
+  username: string
   email: string
   headline?: string
   avatarUrl?: string
 }
 
-export async function getProfile(): Promise<UserProfile> {
-  const token = localStorage.getItem("access_token")
-  if (!token) throw new Error("Unauthorized")
+export type UserProfileWithPosts =
+  UserProfile & {
+    posts: PaginatedResponse<BlogPost>
+  }
+
+export function getProfile(): Promise<UserProfile> {
+  const token = localStorage.getItem(
+    "access_token"
+  )
+  if (!token)
+    throw new Error("Unauthorized")
 
   return fetchAPI("/users/me", {
     headers: {
@@ -134,16 +262,7 @@ export async function getProfile(): Promise<UserProfile> {
   })
 }
 
-export type UserProfileWithPosts = {
-  id: number
-  name: string
-  username: string
-  headline?: string
-  avatarUrl?: string
-  posts: PaginatedResponse<BlogPost>
-}
-
-export async function getUserProfileByUsername(
+export function getUserProfileByUsername(
   username: string,
   page = 1,
   limit = 10
@@ -153,49 +272,49 @@ export async function getUserProfileByUsername(
   )
 }
 
-/* =====================================================
-   POST DETAIL
-===================================================== */
-
-export type PostDetailResponse = {
-  id: number
-  title: string
-  content: string
-  tags: string[]
-  imageUrl: string
-  createdAt: string
-  likes: number
-  comments: number
-  author: {
-    id: number
-    name: string
-    email?: string
-    headline?: string
-    avatarUrl?: string   // ✅ FIX: avatar tersedia
-  }
-}
-
-export async function getPostById(id: number) {
-  return fetchAPI<PostDetailResponse>(
-    `/posts/${id}`
+export function updateProfile(
+  formData: FormData
+): Promise<UserProfile> {
+  const token = localStorage.getItem(
+    "access_token"
   )
+  if (!token)
+    throw new Error("Unauthorized")
+
+  return fetchMultipart("/users/profile", {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  })
 }
 
 /* =====================================================
-   POST LIKES
+   CHANGE PASSWORD
 ===================================================== */
 
-export type PostLike = {
-  id: number
-  name: string
-  headline: string
-  avatarUrl: string
-}
-
-export async function getPostLikes(postId: number) {
-  return fetchAPI<PostLike[]>(
-    `/posts/${postId}/likes`
+export function changePassword(payload: {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}): Promise<{
+  success: boolean
+  message: string
+}> {
+  const token = localStorage.getItem(
+    "access_token"
   )
+  if (!token)
+    throw new Error("Unauthorized")
+
+  return fetchAPI("/users/password", {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
 }
 
 /* =====================================================
@@ -214,27 +333,76 @@ export type Comment = {
   }
 }
 
-export function getPostComments(postId: number) {
-  return fetchAPI<Comment[]>(
+export function getPostComments(
+  postId: number
+): Promise<Comment[]> {
+  return fetchAPI(
     `/posts/${postId}/comments`
   )
 }
 
-export async function createComment(
+export function createComment(
   postId: number,
   content: string
 ) {
-  const token = localStorage.getItem("access_token")
-  if (!token) throw new Error("Unauthorized")
+  const token = localStorage.getItem(
+    "access_token"
+  )
+  if (!token)
+    throw new Error("Unauthorized")
+
+  return fetchAPI(`/comments/${postId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ content }),
+  })
+}
+
+/* =====================================================
+   POST LIKE (STATISTIC)
+===================================================== */
+
+/**
+ * GET list user yang like post
+ * GET /posts/{id}/likes
+ */
+export type PostLikeUser = {
+  id: number
+  name: string
+  headline: string
+  avatarUrl: string
+}
+
+export function getPostLikes(
+  postId: number
+): Promise<PostLikeUser[]> {
+  return fetchAPI(
+    `/posts/${postId}/likes`
+  )
+}
+
+/**
+ * Like / Unlike post
+ * POST /posts/{id}/like
+ */
+export function togglePostLike(
+  postId: number
+): Promise<{ liked: boolean }> {
+  const token = localStorage.getItem(
+    "access_token"
+  )
+  if (!token)
+    throw new Error("Unauthorized")
 
   return fetchAPI(
-    `/comments/${postId}`,
+    `/posts/${postId}/like`,
     {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ content }),
     }
   )
 }

@@ -49,3 +49,12 @@ export type PaginatedResponse<T> = {
   lastPage: number
   total: number
 }
+
+
+export type User = {
+  id: number
+  name: string
+  email: string
+  headline?: string
+  avatarUrl?: string
+}

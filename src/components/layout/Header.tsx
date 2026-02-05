@@ -10,9 +10,9 @@ import AfterLogin from "./AfterLogin"
 
 export default function Header() {
   const { isAuthenticated } = useAuth()
-
   const router = useRouter()
   const searchParams = useSearchParams()
+
   const initialQuery = searchParams.get("search") || ""
   const [query, setQuery] = useState(initialQuery)
 

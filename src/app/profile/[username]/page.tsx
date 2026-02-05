@@ -1,125 +1,162 @@
 "use client"
 
-import { useParams, useSearchParams, useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
+import { useState } from "react"
 import { getUserProfileByUsername } from "@/lib/api"
 import BlogCard from "@/components/blog/BlogCard"
+import EditProfileModal from "@/components/profile/EditProfileModal"
+import ChangePasswordForm from "@/components/profile/ChangePasswordForm"
+import { useAuth } from "@/app/providers"
 
 export default function ProfilePage() {
-  const { username } = useParams<{ username: string }>()
-  const searchParams = useSearchParams()
+  const params = useParams()
   const router = useRouter()
+  const username = params.username as string
 
-  const page = Number(searchParams.get("page") || 1)
-  const limit = 10
+  const { user } = useAuth()
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["profile", username, page],
-    queryFn: () =>
-      getUserProfileByUsername(username, page, limit),
-    enabled: !!username,
+  const [openEdit, setOpenEdit] = useState(false)
+  const [activeTab, setActiveTab] = useState<
+    "posts" | "password"
+  >("posts")
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["profile", username],
+    queryFn: () => getUserProfileByUsername(username),
   })
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-4xl px-6 py-10">
-        <p className="text-sm text-gray-500">Loading profile...</p>
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        Loading profile...
       </div>
     )
   }
 
-  if (isError || !data) {
+  if (!data) {
     return (
-      <div className="mx-auto max-w-4xl px-6 py-10">
-        <p className="text-sm text-red-500">
-          Failed to load profile
-        </p>
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        Profile not found
       </div>
     )
   }
 
-  const { name, headline, avatarUrl, posts } = data
-
-  const changePage = (newPage: number) => {
-    router.push(`/profile/${username}?page=${newPage}`)
-  }
+  const { posts } = data
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-10">
-      {/* ================= PROFILE HEADER ================= */}
-      <div className="flex items-center gap-4 border-b pb-6">
-        <img
-          src={avatarUrl || "/avatar-placeholder.png"}
-          alt={name}
-          className="h-16 w-16 rounded-full object-cover"
-        />
-
-        <div>
-          <h1 className="text-lg font-semibold">{name}</h1>
-          {headline && (
+    <div className="max-w-6xl mx-auto px-4 py-10">
+      {/* PROFILE CARD */}
+      <div className="mb-8 flex items-center justify-between rounded-xl border p-6">
+        <div className="flex items-center gap-4">
+          <img
+            src={
+              user?.avatarUrl ||
+              "/avatar-placeholder.png"
+            }
+            alt={user?.name}
+            className="h-16 w-16 rounded-full object-cover"
+          />
+          <div>
+            <h2 className="text-lg font-semibold">
+              {user?.name}
+            </h2>
             <p className="text-sm text-gray-500">
-              {headline}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* ================= POSTS ================= */}
-      <div className="mt-8">
-        <h2 className="mb-4 font-semibold">
-          {posts.total} Post
-        </h2>
-
-        {posts.data.length === 0 ? (
-          /* ================= EMPTY STATE ================= */
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <img
-              src="/empty-posts.svg"
-              alt="No posts"
-              className="mb-6 h-32"
-            />
-            <p className="font-medium">
-              No posts from this user yet
-            </p>
-            <p className="text-sm text-gray-500">
-              Stay tuned for future posts
+              {user?.headline ||
+                "Frontend Developer"}
             </p>
           </div>
-        ) : (
-          <>
-            <div className="flex flex-col gap-6">
-              {posts.data.map((post) => (
-                <BlogCard key={post.id} post={post} />
-              ))}
-            </div>
+        </div>
 
-            {/* ================= PAGINATION ================= */}
-            {posts.lastPage > 1 && (
-              <div className="mt-8 flex items-center justify-center gap-4">
-                <button
-                  disabled={page === 1}
-                  onClick={() => changePage(page - 1)}
-                  className="text-sm disabled:opacity-40"
-                >
-                  Previous
-                </button>
-
-                <span className="rounded-full bg-blue-600 px-3 py-1 text-sm text-white">
-                  {page}
-                </span>
-
-                <button
-                  disabled={page === posts.lastPage}
-                  onClick={() => changePage(page + 1)}
-                  className="text-sm disabled:opacity-40"
-                >
-                  Next
-                </button>
-              </div>
-            )}
-          </>
-        )}
+        <button
+          onClick={() => setOpenEdit(true)}
+          className="text-sm text-blue-600 hover:underline"
+        >
+          Edit Profile
+        </button>
       </div>
+
+      {/* TABS */}
+      <div className="mb-6 flex items-center gap-8 border-b">
+        <button
+          onClick={() => setActiveTab("posts")}
+          className={`pb-3 text-sm font-medium ${
+            activeTab === "posts"
+              ? "border-b-2 border-blue-600 text-blue-600"
+              : "text-gray-500 hover:text-gray-800"
+          }`}
+        >
+          Your Post
+        </button>
+
+        <button
+          onClick={() => setActiveTab("password")}
+          className={`pb-3 text-sm font-medium ${
+            activeTab === "password"
+              ? "border-b-2 border-blue-600 text-blue-600"
+              : "text-gray-500 hover:text-gray-800"
+          }`}
+        >
+          Change Password
+        </button>
+      </div>
+
+      {/* TAB CONTENT */}
+      {activeTab === "posts" && (
+        <>
+          {/* HEADER */}
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-lg font-semibold">
+              {posts.total} Post
+            </h3>
+
+            <button
+              onClick={() =>
+                router.push("/blogs/write")
+              }
+              className="
+                w-[182px]
+                h-[44px]
+                p-2
+                gap-2
+                rounded-full
+                flex
+                items-center
+                justify-center
+                bg-blue-600
+                text-white
+                text-sm
+                font-semibold
+                hover:bg-blue-700
+                transition
+              "
+            >
+              ✏️ Write Post
+            </button>
+          </div>
+
+          {/* POST LIST */}
+          <div className="space-y-6">
+            {posts.data.map((post) => (
+              <BlogCard
+                key={post.id}
+                post={post}
+                showActions
+              />
+            ))}
+          </div>
+        </>
+      )}
+
+      {activeTab === "password" && (
+        <ChangePasswordForm />
+      )}
+
+      {/* EDIT PROFILE MODAL */}
+      <EditProfileModal
+        open={openEdit}
+        onClose={() => setOpenEdit(false)}
+      />
     </div>
   )
 }
