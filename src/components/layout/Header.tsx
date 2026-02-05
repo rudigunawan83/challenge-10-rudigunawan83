@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Search } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
@@ -28,10 +29,16 @@ export default function Header() {
         {/* LOGO */}
         <Link
           href="/blogs"
-          className="flex items-center gap-2 shrink-0 text-lg font-bold"
+          className="flex items-center gap-2 shrink-0"
         >
-          <div className="h-8 w-8 rounded bg-blue-600" />
-          Your Logo
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={120}
+            height={32}
+            priority
+            className="h-8 w-auto object-contain"
+          />
         </Link>
 
         {/* SEARCH */}
