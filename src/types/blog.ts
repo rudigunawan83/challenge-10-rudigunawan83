@@ -25,22 +25,22 @@
 
 // src/types/blog.ts
 
-export type BlogPost = {
-  id: number
-  title: string
-  content: string
-  tags: string[]
-  imageUrl: string
-  createdAt: string
-  likes: number
-  comments: number
-  author: {
-    id: number
-    name: string
-    username?: string
-    email?: string
-  }
-}
+// export type BlogPost = {
+//   id: number
+//   title: string
+//   content: string
+//   tags: string[]
+//   imageUrl: string
+//   createdAt: string
+//   likes: number
+//   comments: number
+//   author: {
+//     id: number
+//     name: string
+//     username?: string
+//     email?: string
+//   }
+// }
 
 
 export type PaginatedResponse<T> = {
@@ -57,4 +57,20 @@ export type User = {
   email: string
   headline?: string
   avatarUrl?: string
+}
+
+export type BlogPost = {
+  id: number
+  title: string
+  content: string
+  imageUrl?: string
+  tags: string[]
+  createdAt: string
+  likes: number
+  comments: number
+  likedByMe?: boolean   // ⬅️ TAMBAHKAN
+  author: {
+    id: number
+    name: string
+  }
 }
