@@ -4,31 +4,31 @@ import Link from "next/link"
 import { Search } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
+import { useAuth } from "@/app/providers"
 import BeforeLogin from "./BeforeLogin"
 import AfterLogin from "./AfterLogin"
 
 export default function Header() {
+  const { isAuthenticated } = useAuth()
+
   const router = useRouter()
   const searchParams = useSearchParams()
   const initialQuery = searchParams.get("search") || ""
-
   const [query, setQuery] = useState(initialQuery)
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!query.trim()) return
-
     router.push(`/blogs?search=${encodeURIComponent(query)}&page=1`)
   }
 
   return (
     <header className="border-b bg-white">
       <div className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-4">
-
         {/* LOGO */}
         <Link
           href="/blogs"
-          className="flex items-center gap-2 text-lg font-bold shrink-0"
+          className="flex items-center gap-2 shrink-0 text-lg font-bold"
         >
           <div className="h-8 w-8 rounded bg-blue-600" />
           Your Logo
@@ -52,20 +52,8 @@ export default function Header() {
         </form>
 
         {/* AUTH */}
-        <div className="flex items-center gap-4 shrink-0">
-          <Link
-            href="/login"
-            className="text-sm font-medium text-blue-600 hover:underline"
-          >
-            Login
-          </Link>
-
-          <Link
-            href="/register"
-            className="rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-          >
-            Register
-          </Link>
+        <div className="shrink-0">
+          {isAuthenticated ? <AfterLogin /> : <BeforeLogin />}
         </div>
       </div>
     </header>

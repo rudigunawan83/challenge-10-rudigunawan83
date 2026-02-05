@@ -38,7 +38,7 @@ export default function RegisterPage() {
     if (!form.name) newErrors.name = "Name is required"
     if (!form.email) newErrors.email = "Email is required"
     if (!form.password) newErrors.password = "Password is required"
-    if (form.password.length < 6) {
+    if (form.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters"
     }
     if (form.password !== form.confirmPassword) {

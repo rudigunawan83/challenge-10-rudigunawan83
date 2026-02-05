@@ -22,3 +22,30 @@
 //   page: number;
 //   // ... tambahkan fields lainnya
 // }
+
+// src/types/blog.ts
+
+export type BlogPost = {
+  id: number
+  title: string
+  content: string
+  tags: string[]
+  imageUrl: string
+  createdAt: string
+  likes: number
+  comments: number
+  author: {
+    id: number
+    name: string
+    username?: string
+    email?: string
+  }
+}
+
+
+export type PaginatedResponse<T> = {
+  data: T[]
+  page: number
+  lastPage: number
+  total: number
+}

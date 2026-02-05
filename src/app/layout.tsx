@@ -1,23 +1,7 @@
-import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "react-hot-toast"
 import Providers from "./providers"
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-})
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-})
-
-export const metadata: Metadata = {
-  title: "Blog App Challenge",
-  description: "Blog Application Challenge - Next.js",
-}
+import Header from "@/components/layout/Header"
 
 export default function RootLayout({
   children,
@@ -26,21 +10,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {/* Global Providers (TanStack Query, dll) */}
+      <body className="antialiased">
         <Providers>
+          <Header />
           {children}
         </Providers>
 
-        {/* Global Toast */}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-          }}
-        />
+        <Toaster position="top-right" />
       </body>
     </html>
   )

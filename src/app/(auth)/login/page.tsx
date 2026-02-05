@@ -6,11 +6,13 @@ import Button from "@/components/ui/button"
 import Link from "next/link"
 import toast from "react-hot-toast"
 import { Eye, EyeOff } from "lucide-react"
-import { loginUser } from "@/lib/api"
+import { loginUser, getProfile } from "@/lib/api"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/app/providers"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { setUser } = useAuth()
 
   const [form, setForm] = useState({
     email: "",
@@ -23,34 +25,39 @@ export default function LoginPage() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
-
     if (!form.email) newErrors.email = "Email is required"
     if (!form.password) newErrors.password = "Password is required"
-
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!validate()) return
 
     setLoading(true)
 
     try {
-      const res = await loginUser({
+      /* =====================
+         1. LOGIN → TOKEN
+      ===================== */
+      const { token } = await loginUser({
         email: form.email,
         password: form.password,
       })
 
-      // 🔐 Simpan token (sementara pakai localStorage)
-      const token = res.accessToken || res.token
-      if (token) {
-        localStorage.setItem("access_token", token)
-      }
+      localStorage.setItem("access_token", token)
+
+      /* =====================
+         2. FETCH PROFILE
+      ===================== */
+      const user = await getProfile()
+
+      localStorage.setItem("user", JSON.stringify(user))
+      setUser(user)
 
       toast.success("Login successful 🎉")
-      router.push("/blogs") // next step: protected page
+      router.push("/blogs")
     } catch (error: any) {
       toast.error(error.message || "Login failed")
     } finally {
@@ -66,61 +73,49 @@ export default function LoginPage() {
         </h1>
 
         <form onSubmit={handleLogin} className="space-y-4">
-          {/* EMAIL */}
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              Email
-            </label>
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={form.email}
-              error={!!errors.email}
-              helperText={errors.email || "Error Text Helper"}
-              onChange={(e) =>
-                setForm({ ...form, email: e.target.value })
-              }
-            />
-          </div>
+          <Input
+            type="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) =>
+              setForm({ ...form, email: e.target.value })
+            }
+            error={!!errors.email}
+            helperText={errors.email}
+          />
 
-          {/* PASSWORD */}
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              Password
-            </label>
-            <Input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              value={form.password}
-              error={!!errors.password}
-              helperText={errors.password || "Error Text Helper"}
-              rightIcon={
-                showPassword ? (
-                  <EyeOff
-                    size={18}
-                    onClick={() => setShowPassword(false)}
-                  />
-                ) : (
-                  <Eye
-                    size={18}
-                    onClick={() => setShowPassword(true)}
-                  />
-                )
-              }
-              onChange={(e) =>
-                setForm({ ...form, password: e.target.value })
-              }
-            />
-          </div>
+          <Input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) =>
+              setForm({ ...form, password: e.target.value })
+            }
+            rightIcon={
+              showPassword ? (
+                <EyeOff
+                  size={18}
+                  onClick={() => setShowPassword(false)}
+                />
+              ) : (
+                <Eye
+                  size={18}
+                  onClick={() => setShowPassword(true)}
+                />
+              )
+            }
+            error={!!errors.password}
+            helperText={errors.password}
+          />
 
           <Button disabled={loading}>
             {loading ? "Loading..." : "Login"}
           </Button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className="mt-4 text-center text-sm">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-blue-500 hover:underline">
+          <Link href="/register" className="text-blue-600 hover:underline">
             Register
           </Link>
         </p>
