@@ -154,12 +154,12 @@ export default function BlogCard({
     queryClient.invalidateQueries({
       queryKey: ["profile"],
     })
+
     queryClient.invalidateQueries({
       queryKey: ["post-statistic", post.id],
     })
   },
 })
-
 
   return (
     <>
