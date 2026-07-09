@@ -8,6 +8,7 @@ import toast from "react-hot-toast"
 import { Eye, EyeOff } from "lucide-react"
 import { registerUser } from "@/lib/api"
 import { useRouter } from "next/navigation"
+import { Suspense } from "react"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -73,6 +74,7 @@ export default function RegisterPage() {
   }
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-sm">
         <h1 className="mb-6 text-xl font-semibold">
@@ -180,5 +182,6 @@ export default function RegisterPage() {
         </p>
       </div>
     </div>
+    </Suspense>
   )
 }
