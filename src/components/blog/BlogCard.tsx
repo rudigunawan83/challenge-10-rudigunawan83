@@ -169,6 +169,7 @@ export default function BlogCard({
           <img
             src={post.imageUrl || "/placeholder.jpg"}
             alt={post.title}
+            loading="lazy"
             className="h-40 w-60 rounded-lg object-cover cursor-pointer"
           />
         </Link>
@@ -277,22 +278,26 @@ export default function BlogCard({
       </div>
 
       {/* MODALS */}
-      <DeletePostModal
-        open={openDelete}
-        onClose={() => setOpenDelete(false)}
-        onConfirm={() =>
-          deleteMutation.mutate()
-        }
-        loading={deleteMutation.isPending}
-      />
+      {openDelete && (
+        <DeletePostModal
+          open={openDelete}
+          onClose={() => setOpenDelete(false)}
+          onConfirm={() =>
+            deleteMutation.mutate()
+          }
+          loading={deleteMutation.isPending}
+        />
+      )}
 
-      <StatisticModal
-        open={openStatistic}
-        postId={post.id}
-        onClose={() =>
-          setOpenStatistic(false)
-        }
-      />
+      {openStatistic && (
+        <StatisticModal
+          open={openStatistic}
+          postId={post.id}
+          onClose={() =>
+            setOpenStatistic(false)
+          }
+        />
+      )}
     </>
   )
 }

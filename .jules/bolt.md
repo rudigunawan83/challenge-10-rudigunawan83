@@ -1,0 +1,3 @@
+## 2024-05-15 - React Query N+1 inside Hidden List Modals
+**Learning:** Using `useQuery` inside a modal component that is rendered for each item in a list can cause massive N+1 API calls immediately on page load, even if the modal is closed, unless the `useQuery`'s `enabled` flag explicitly checks that the modal is open. Similarly, instantiating hidden modals for every row increases React's component tree size and memory footprint unnecessarily.
+**Action:** When adding modals or detailed components to list items, always conditionally render them (`{isOpen && <Modal />}`) to defer their creation until needed. Additionally, if the modal handles its own data fetching, ensure `useQuery`'s `enabled` explicitly requires the modal to be open before fetching data.
