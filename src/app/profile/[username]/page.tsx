@@ -153,10 +153,13 @@ export default function ProfilePage() {
       )}
 
       {/* EDIT PROFILE MODAL */}
-      <EditProfileModal
-        open={openEdit}
-        onClose={() => setOpenEdit(false)}
-      />
+      {/* ⚡ Bolt: Conditionally render modals to reduce DOM nodes */}
+      {openEdit && (
+        <EditProfileModal
+          open={openEdit}
+          onClose={() => setOpenEdit(false)}
+        />
+      )}
     </div>
   )
 }
