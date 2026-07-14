@@ -275,12 +275,15 @@ export default function BlogDetailPage() {
         )}
       </main>
 
-      <CommentsModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        postId={postId}
-        comments={comments}
-      />
+      {/* ⚡ Bolt: Conditionally render modals to reduce DOM nodes */}
+      {openModal && (
+        <CommentsModal
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+          postId={postId}
+          comments={comments}
+        />
+      )}
 
       <footer className="mt-20 border-t py-6 text-center text-sm text-gray-500">
         © 2025 Web Programming Hack Blog. All rights reserved.
