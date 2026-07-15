@@ -9,8 +9,9 @@ import { Eye, EyeOff } from "lucide-react"
 import { loginUser, getProfile } from "@/lib/api"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/app/providers"
+import { Suspense } from "react"
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter()
   const { setUser } = useAuth()
 
@@ -121,5 +122,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   )
 }

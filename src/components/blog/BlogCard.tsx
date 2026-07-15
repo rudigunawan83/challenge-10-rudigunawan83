@@ -277,22 +277,27 @@ export default function BlogCard({
       </div>
 
       {/* MODALS */}
-      <DeletePostModal
-        open={openDelete}
-        onClose={() => setOpenDelete(false)}
-        onConfirm={() =>
-          deleteMutation.mutate()
-        }
-        loading={deleteMutation.isPending}
-      />
+      {/* ⚡ Bolt: conditionally render modals to minimize DOM size when these modals are rendered within large lists. */}
+      {openDelete && (
+        <DeletePostModal
+          open={openDelete}
+          onClose={() => setOpenDelete(false)}
+          onConfirm={() =>
+            deleteMutation.mutate()
+          }
+          loading={deleteMutation.isPending}
+        />
+      )}
 
-      <StatisticModal
-        open={openStatistic}
-        postId={post.id}
-        onClose={() =>
-          setOpenStatistic(false)
-        }
-      />
+      {openStatistic && (
+        <StatisticModal
+          open={openStatistic}
+          postId={post.id}
+          onClose={() =>
+            setOpenStatistic(false)
+          }
+        />
+      )}
     </>
   )
 }
