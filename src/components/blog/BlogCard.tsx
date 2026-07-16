@@ -277,22 +277,26 @@ export default function BlogCard({
       </div>
 
       {/* MODALS */}
-      <DeletePostModal
-        open={openDelete}
-        onClose={() => setOpenDelete(false)}
-        onConfirm={() =>
-          deleteMutation.mutate()
-        }
-        loading={deleteMutation.isPending}
-      />
+      {openDelete && (
+        <DeletePostModal
+          open={openDelete}
+          onClose={() => setOpenDelete(false)}
+          onConfirm={() =>
+            deleteMutation.mutate()
+          }
+          loading={deleteMutation.isPending}
+        />
+      )}
 
-      <StatisticModal
-        open={openStatistic}
-        postId={post.id}
-        onClose={() =>
-          setOpenStatistic(false)
-        }
-      />
+      {openStatistic && (
+        <StatisticModal
+          open={openStatistic}
+          postId={post.id}
+          onClose={() =>
+            setOpenStatistic(false)
+          }
+        />
+      )}
     </>
   )
 }
