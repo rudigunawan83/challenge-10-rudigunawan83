@@ -1,0 +1,3 @@
+## 2025-02-23 - Prevent N+1 API Requests in Modals inside List Views
+**Learning:** Rendering modals within lists (e.g. `StatisticModal` inside `BlogCard`) can trigger a massive number of concurrent API requests (N+1 queries) when the page loads, even if the modals are visually closed. This happens if the data fetching logic inside the modal does not respect the `open` state. Also, rendering many hidden modals can bloat the DOM size.
+**Action:** When creating Modals, especially inside lists, always conditionally render them (`{isOpen && <Modal />}`) to minimize DOM size. Additionally, verify that any internal data-fetching (like `useQuery`) requires the modal to be open (`enabled: open && ...`) to prevent massive N+1 API requests on page load.
