@@ -1,0 +1,4 @@
+## 2025-02-18 - XSS via dangerouslySetInnerHTML in Next.js App Router
+**Vulnerability:** Unsanitized user-generated content (`post.content`) was being directly rendered using `dangerouslySetInnerHTML` in the blog detail page (`src/app/blogs/[id]/page.tsx`), exposing a critical Cross-Site Scripting (XSS) vulnerability.
+**Learning:** In Next.js SSR (App Router) contexts, standard DOMPurify can fail during build due to the lack of a window object. We must use `isomorphic-dompurify` to safely sanitize HTML strings on both the server and the client without causing hydration or build errors.
+**Prevention:** Always sanitize dynamically loaded HTML content before rendering it with `dangerouslySetInnerHTML`. Establish a strict rule to import and use `isomorphic-dompurify` whenever `dangerouslySetInnerHTML` is required for rendering markdown or rich text.
