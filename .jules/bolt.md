@@ -1,0 +1,3 @@
+## 2025-02-27 - Frontend N+1 Issue with React Query inside Modals
+**Learning:** Found a serious frontend N+1 problem: Modals (`StatisticModal`) rendered inside a mapped list (`BlogCard`) were always mounting and executing their hooks (`useQuery`) immediately upon page load, because `enabled` only required `!!postId`. Even though the modal overlay was hidden, it triggered a network request for *every* item in the list immediately.
+**Action:** Always verify that internal data-fetching inside modals (like `useQuery`) explicitly checks if the modal is open (`enabled: isOpen && ...`). Even better, conditionally render the modal component in the parent list mapping (`{isOpen && <Modal />}`) so the DOM nodes and hooks aren't even created until needed.
