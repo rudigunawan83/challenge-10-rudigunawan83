@@ -1,0 +1,3 @@
+## 2024-05-15 - Unconditional Modal Rendering causing N+1 Queries
+**Learning:** Components using `@tanstack/react-query` inside modals can cause massive N+1 API requests on page load if the modal is mounted unconditionally for every item in a list (e.g., in a feed of blog cards), because the queries will execute immediately upon mount.
+**Action:** When placing modals inside list items, always conditionally render the modal component (`{isOpen && <Modal />}`) to minimize DOM size, AND ensure that any `useQuery` hooks within the modal include the modal's `open` state in their `enabled` condition (`enabled: open && ...`) as a secondary safeguard.
