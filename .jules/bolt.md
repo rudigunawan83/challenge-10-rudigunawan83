@@ -1,0 +1,3 @@
+## 2024-07-22 - Prevent N+1 query problem and massive DOM sizing for Modals inside Lists
+**Learning:** Components wrapping queries utilizing `@tanstack/react-query` inside Modals that are rendered within lists can result in massive N+1 query API calls on render and huge DOM sizing issues if not selectively enabled based on the open state.
+**Action:** When creating Modals inside lists, enforce conditional rendering directly on the JSX Modal Element (e.g. `{isOpen && <Modal />}`). Furthermore, ensure that any `useQuery` execution within the Modal is strictly dependent on the open state via the `enabled` prop (e.g. `enabled: isOpen && ...`).
