@@ -1,0 +1,3 @@
+## 2024-07-23 - N+1 API Requests from Hidden Modals
+**Learning:** Rendering modals unconditionally inside list items triggers N+1 API requests via their internal data-fetching hooks. Even if a modal returns `null` when its `open` prop is false, its hooks (e.g., `useQuery`) are still called and will fetch data if not explicitly disabled. Conditionally rendering the modal with `{isOpen && <Modal />}` can break exit animations relying on the `open` prop.
+**Action:** Always explicitly verify that any internal data-fetching hooks (like `useQuery`) within a modal require the modal to be open (`enabled: isOpen && ...`) to prevent massive N+1 API requests on page load.
