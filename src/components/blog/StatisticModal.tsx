@@ -19,16 +19,22 @@ export default function StatisticModal({
 }: Props) {
   const [tab, setTab] = useState<"like" | "comment">("like")
 
+  // Optimization: Added `open &&` to the enabled condition.
+  // This prevents massive N+1 API requests on page load for hidden modals in lists,
+  // while allowing UI exit animations to finish correctly.
   const { data: likes = [] } = useQuery({
     queryKey: ["post-likes", postId],
     queryFn: () => getPostLikes(postId as number),
-    enabled: !!postId && tab === "like",
+    enabled: open && !!postId && tab === "like",
   })
 
+  // Optimization: Added `open &&` to the enabled condition.
+  // This prevents massive N+1 API requests on page load for hidden modals in lists,
+  // while allowing UI exit animations to finish correctly.
   const { data: comments = [] } = useQuery({
     queryKey: ["post-comments", postId],
     queryFn: () => getPostComments(postId as number),
-    enabled: !!postId && tab === "comment",
+    enabled: open && !!postId && tab === "comment",
   })
 
   if (!open) return null
