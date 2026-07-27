@@ -1,0 +1,3 @@
+## 2024-07-27 - Preventing N+1 API Requests in Hidden Modals
+**Learning:** Hidden modals that are rendered as part of a list (e.g., inside each list item component) can trigger massive N+1 API requests on page load if they initiate data fetching (like `useQuery`) regardless of their visibility state. Do not conditionally render the modal wrapper itself (e.g., `{isOpen && <Modal open={isOpen} />}`) to avoid breaking exit animations that rely on the `open` prop.
+**Action:** When optimizing data-fetching in hidden modals within a list, ensure that the query explicitly requires the modal to be open (`enabled: open && ...`) rather than conditionally rendering the modal component itself.
