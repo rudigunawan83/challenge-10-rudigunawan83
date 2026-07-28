@@ -1,0 +1,4 @@
+## 2025-02-12 - Cross-Site Scripting (XSS) in blog post rendering
+**Vulnerability:** The blog post content in `src/app/blogs/[id]/page.tsx` was rendered directly using `dangerouslySetInnerHTML` without any sanitization, creating an XSS vulnerability if an attacker injects malicious scripts in the content field of a blog post.
+**Learning:** Next.js applications using `dangerouslySetInnerHTML` will execute embedded JavaScript directly. Relying purely on client-side input validation is insufficient when dealing with rich text data that can be potentially manipulated or circumvented directly through the API.
+**Prevention:** Always use a well-maintained sanitization library such as `DOMPurify` (or `isomorphic-dompurify` for SSR contexts) when utilizing `dangerouslySetInnerHTML` to scrub out potentially harmful script tags and event handlers before insertion.
