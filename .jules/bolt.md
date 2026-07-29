@@ -1,0 +1,3 @@
+## 2024-05-24 - Prevent N+1 API Requests in Iterated Hidden Modals
+**Learning:** In this application architecture, when rendering a list of items (e.g., `BlogCard` list), modals like `StatisticModal` are typically rendered on every iteration. This causes a massive N+1 API request bottleneck on page load because `useQuery` fetches data immediately if its `enabled` property does not explicitly check if the modal is currently open.
+**Action:** When working with hidden modals instantiated in a loop, always ensure that data-fetching hooks explicitly include an `open` check in their `enabled` condition (e.g. `enabled: !!postId && open`) to prevent executing network requests before the user interacts with the modal.
