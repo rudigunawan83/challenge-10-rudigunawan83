@@ -1,0 +1,3 @@
+## 2024-05-24 - Prevent N+1 API requests in hidden modals in lists
+**Learning:** When modals are rendered inside list components (like a `BlogCard` list) and rely on `useQuery` or other data-fetching mechanisms, they will aggressively fetch data for *every* item in the list on initial page load if not explicitly disabled. This creates massive N+1 performance bottlenecks.
+**Action:** Always verify that any internal data-fetching (like `useQuery`) explicitly requires the modal to be open (e.g. `enabled: isOpen && ...`) rather than conditionally rendering the modal wrapper itself (`{isOpen && <Modal open={isOpen} />}`), which can break UI exit animations relying on the `open` prop.
