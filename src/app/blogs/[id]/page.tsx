@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
 import dayjs from "dayjs"
 import { useState } from "react"
+import DOMPurify from "isomorphic-dompurify"
 import {
   getPostById,
   getPostComments,
@@ -138,9 +139,10 @@ export default function BlogDetailPage() {
         )}
 
         {/* CONTENT */}
+        {/* 🛡️ Sentinel: Sanitize HTML content to prevent XSS vulnerabilities */}
         <article
           className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
 
         {/* ================= COMMENTS ================= */}
