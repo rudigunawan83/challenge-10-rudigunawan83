@@ -1,0 +1,3 @@
+## 2024-05-18 - [Prevent N+1 API Requests in Hidden Modals]
+**Learning:** Hidden modals nested inside lists (e.g., `StatisticModal` inside `BlogCard`) can trigger massive N+1 API requests on page load if their internal data-fetching hooks (like `useQuery`) don't explicitly require the modal to be open (`enabled: open && ...`). Conditionally rendering the modal wrapper (`{isOpen && <Modal />}`) breaks UI exit animations, making the `enabled` flag the best approach.
+**Action:** Always ensure that `useQuery` hooks inside hidden modals have their `enabled` prop tied to the modal's `open` state, especially when rendered repeatedly within list components.
