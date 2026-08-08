@@ -1,0 +1,3 @@
+## 2024-12-05 - Hidden Modal N+1 Requests
+**Learning:** Rendering modals unconditionally in lists (even if they return `null` inside based on an `open` prop) can trigger massive N+1 queries if inner data-fetching hooks (like `useQuery`) don't explicitly check the `open` state in their `enabled` configuration.
+**Action:** When a modal component manages its own data-fetching, always include `open` (or equivalent visibility state) in the `enabled` options for hooks like `useQuery` to ensure queries are only fired when the modal is actually visible. Do NOT conditionally render the modal wrapper in the parent component to avoid breaking UI exit animations.
