@@ -1,0 +1,3 @@
+## 2024-08-12 - Prevent N+1 API Requests in Modals
+**Learning:** In Next.js with React Query, when modals are rendered alongside lists (e.g., in `StatisticModal` per blog post in a feed), `useQuery` hooks within those modals execute their queries immediately upon page load if the modal components are mounted, even if they return `null` via an early return (due to rules of hooks). This causes massive N+1 API requests on page load.
+**Action:** Always include the modal visibility state (e.g., `open`) in the `enabled` configuration option of `useQuery` hooks inside conditionally visible components, rather than relying solely on early returns in the render function.
