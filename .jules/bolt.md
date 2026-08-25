@@ -1,0 +1,3 @@
+## 2025-02-23 - [Modal Data Fetching in Lists]
+**Learning:** In list views where each item renders a hidden modal containing its own data fetching (e.g., `useQuery`), failing to condition the fetch on the modal's `open` state results in massive N+1 API requests on page load.
+**Action:** Always ensure internal `useQuery` hooks in modal components are only enabled when the modal is actually open (e.g., `enabled: !!id && open`), rather than conditionally rendering the entire modal wrapper, which can break UI animations.
