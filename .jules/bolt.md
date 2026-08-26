@@ -1,0 +1,3 @@
+## 2024-05-24 - N+1 Queries in Hidden Modals
+**Learning:** In this codebase, modals are often rendered unconditionally inside lists (like BlogCard) but hidden via an `open` prop. If the modal contains data-fetching hooks (like `useQuery`) that don't depend on the `open` prop, it will trigger an API call for every item in the list on page load, leading to massive N+1 query problems.
+**Action:** When working with modals rendered in lists, do NOT conditionally render the modal wrapper itself (`{isOpen && <Modal />}`) as it breaks exit animations. Instead, always ensure that any internal data-fetching explicitly requires the modal to be open (`enabled: isOpen && ...`).
