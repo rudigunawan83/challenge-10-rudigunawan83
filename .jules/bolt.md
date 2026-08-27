@@ -1,0 +1,3 @@
+## 2024-10-24 - Unnecessary API calls for hidden modals in lists
+**Learning:** Found a performance bottleneck where components like `StatisticModal` when rendered unconditionally within a list (e.g. `BlogCard`), triggered `useQuery` API requests on page load for every single item, even when the modal was visually hidden (`open === false`). Conditionally rendering the modal (`{isOpen && <Modal open={isOpen} />}`) breaks UI exit animations relying on the `open` prop.
+**Action:** Always prevent massive N+1 API requests on page load by verifying that any internal data-fetching (like `useQuery`) within modal components explicitly requires the modal to be open (`enabled: open && ...`).
