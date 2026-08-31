@@ -1,0 +1,3 @@
+## 2024-08-31 - React Query N+1 Fetching with Hidden Modals
+**Learning:** Components containing `useQuery` hooks fetch immediately on mount regardless of early returns (like `if (!open) return null`) further down in the component because hooks must run first. This is highly problematic when a modal component is rendered unconditionally for every item in a large list (like `BlogCard`), resulting in massive N+1 API requests on initial page load even though no modals are visible.
+**Action:** Always ensure that data-fetching hooks inside modal components rely on the modal's `open` prop within their `enabled` array (e.g., `enabled: open && ...`) to strictly defer network requests until user interaction.
