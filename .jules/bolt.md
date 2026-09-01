@@ -1,0 +1,3 @@
+## 2024-10-24 - Avoiding N+1 query problem with conditionally rendered Modals
+**Learning:** When using React Query in a component that is rendered in a list, we must be careful with how data fetching is conditionally enabled. Rendering the component (e.g. `<Modal open={isOpen} />`) without conditionally preventing fetching causes an N+1 API call issue as every component will trigger data fetches as soon as it mounts, even if `isOpen` is false.
+**Action:** Always ensure that `useQuery` hooks within conditionally visible components (like Modals) include the visibility state (e.g., `open`) in their `enabled` condition to prevent unnecessary data fetching on mount. Avoid conditionally rendering the wrapper component itself if it breaks exit animations.
