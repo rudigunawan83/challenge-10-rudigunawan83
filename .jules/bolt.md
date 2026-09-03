@@ -1,0 +1,3 @@
+## 2024-06-13 - [Hidden Modals N+1 Data-Fetching Trap]
+**Learning:** In a list context (like a list of Blog Cards), rendering hidden modals for each item without checking their `open` state in data-fetching hooks (e.g. `useQuery`) causes N+1 requests on page load. Attempting to fix this by conditionally rendering the modal wrapper (`{isOpen && <Modal />}`) can break UI exit animations that rely on the `open` prop.
+**Action:** When optimizing hidden modals, solely prevent massive N+1 API requests by verifying that any internal data-fetching explicitly requires the modal to be open (`enabled: open && ...`). Do NOT conditionally render the wrapper if exit animations are required.
