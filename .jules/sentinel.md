@@ -1,0 +1,4 @@
+## 2023-10-27 - [XSS vulnerability in dangerouslySetInnerHTML]
+**Vulnerability:** A Cross-Site Scripting (XSS) vulnerability was found in `src/app/blogs/[id]/page.tsx` because `dangerouslySetInnerHTML` was used directly with un-sanitized blog content.
+**Learning:** In Next.js (App Router, Server-Side Rendering context), using `dangerouslySetInnerHTML` without properly sanitizing HTML input can easily lead to XSS. We need to use libraries that work well in isomorphic environments (both server and client), hence the choice of `isomorphic-dompurify`.
+**Prevention:** Always sanitize HTML data from potentially untrusted sources (e.g. databases, APIs) before rendering it with `dangerouslySetInnerHTML`. Use `isomorphic-dompurify` instead of `dompurify` if executing in a Server-Side Rendering or Static Generation environment to prevent build errors.
