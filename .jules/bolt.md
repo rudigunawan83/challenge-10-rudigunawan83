@@ -1,0 +1,3 @@
+## 2024-06-11 - [Hidden Modal N+1 Query Bottleneck]
+**Learning:** In list views where each item renders a modal component (like `StatisticModal` within `BlogCard`), queries within the modal (`useQuery`) that lack `open` in their `enabled` condition will execute for EVERY item on initial page load, creating a massive N+1 API bottleneck, even if the modal is visually hidden. Conditional rendering of the modal wrapper itself is not a safe fix as it can break exit animations relying on the `open` prop.
+**Action:** When implementing modal components used within lists, ALWAYS verify that internal data-fetching is explicitly gated by the modal's open state (e.g. `enabled: !!postId && open`) to prevent silent N+1 requests on mount.
