@@ -1,0 +1,3 @@
+## 2025-01-20 - Prevent N+1 queries in Modals inside lists
+**Learning:** When modals are rendered inside a list item (e.g. `StatisticModal` inside `BlogCard`), their internal `useQuery` hooks will execute on mount even if the modal is visually hidden (`open={false}`), causing a massive N+1 query issue on page load. Conditionally rendering the modal wrapper (`{open && <Modal />}`) fixes the query issue but breaks UI exit animations that depend on the `open` prop transitioning to `false`.
+**Action:** Always optimize hidden modals in lists by adding `open` to the `enabled` condition of any data-fetching hooks (e.g., `enabled: open && ...`). This prevents the queries from firing until the modal is actually opened, while preserving exit animations.
