@@ -8,8 +8,9 @@ import { useState } from "react"
 import { useAuth } from "@/app/providers"
 import BeforeLogin from "./BeforeLogin"
 import AfterLogin from "./AfterLogin"
+import { Suspense } from "react"
 
-export default function Header() {
+function HeaderContent() {
   const { isAuthenticated } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -64,5 +65,13 @@ export default function Header() {
         </div>
       </div>
     </header>
+  )
+}
+
+export default function Header() {
+  return (
+    <Suspense fallback={<header className="border-b bg-white h-[73px]"></header>}>
+      <HeaderContent />
+    </Suspense>
   )
 }
