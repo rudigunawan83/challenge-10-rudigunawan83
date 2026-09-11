@@ -1,0 +1,3 @@
+## 2026-09-11 - Prevent Eager Data Fetching in Hidden Modals
+**Learning:** Components containing conditional renders (like modals returning null if not open) still execute their top-level hooks. Unrestricted `useQuery` hooks inside mapping loops (e.g. lists of posts rendering individual statistic modals) will trigger massive N+1 API requests on page load.
+**Action:** Always add the visibility boolean (e.g., `open && ...`) to the `enabled` configuration of data-fetching hooks (like `useQuery`) inside conditionally rendered UI components to defer requests until they are actually needed by the user.
