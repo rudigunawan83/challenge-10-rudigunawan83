@@ -13,6 +13,7 @@ import {
 } from "@/lib/api"
 import { useAuth } from "@/app/providers"
 import CommentsModal from "@/components/blog/CommentsModal"
+import DOMPurify from "isomorphic-dompurify"
 import { ThumbsUp, MessageCircle } from "lucide-react"
 import toast from "react-hot-toast"
 
@@ -138,9 +139,10 @@ export default function BlogDetailPage() {
         )}
 
         {/* CONTENT */}
+        {/* 🛡️ Sentinel: Sanitize user-generated content to prevent XSS */}
         <article
           className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
 
         {/* ================= COMMENTS ================= */}
