@@ -1,0 +1,3 @@
+## 2024-09-12 - Prevent massive N+1 queries from hidden components in lists
+**Learning:** React components rendered within a mapped list (like a Modal for a blog post item) that execute data-fetching logic on mount can inadvertently cause N+1 query patterns. If a modal wrapper component (`StatisticModal`) initializes a `useQuery` immediately but remains visibly hidden (`if (!open) return null`), the app executes a request for every item in the list upon load, massively degrading performance.
+**Action:** Always conditionally fetch data in hidden sub-components. Ensure `useQuery` hooks within modals or dropdowns include an `enabled: isOpen` option to guarantee data fetching is deferred until the user intentionally interacts with it.
