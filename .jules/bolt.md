@@ -1,0 +1,3 @@
+## 2024-05-18 - Prevent N+1 queries from hidden modals in lists
+**Learning:** Rendering hidden modals within lists (e.g., BlogCard lists) that internally fetch data via `useQuery` on mount can cause severe N+1 request issues. The data fetching runs even if the modal component returns `null` or is styled `display: none` because hooks are evaluated before the return statement. We cannot conditionally render the modal wrapper itself (e.g. `{isOpen && <Modal />}`) because that breaks exit animations on the modal relying on the `open` prop.
+**Action:** Always include the `open` state in the `useQuery`'s `enabled` condition (`enabled: open && ...`) for modals within list items, ensuring lazy data fetching without breaking UI animations.
