@@ -34,7 +34,7 @@
 //   createdAt: string
 //   likes: number
 //   comments: number
-//   author: {
+//   author: { avatarUrl?: string;
 //     id: number
 //     name: string
 //     username?: string
@@ -69,7 +69,7 @@ export type BlogPost = {
   likes: number
   comments: number
   likedByMe?: boolean   // ⬅️ TAMBAHKAN
-  author: {
+  author: { avatarUrl?: string;
     id: number
     name: string
   }

@@ -2,6 +2,7 @@ import "./globals.css"
 import { Toaster } from "react-hot-toast"
 import Providers from "./providers"
 import Header from "@/components/layout/Header"
+import { Suspense } from "react"
 
 export default function RootLayout({
   children,
@@ -12,7 +13,9 @@ export default function RootLayout({
     <html lang="id">
       <body className="antialiased">
         <Providers>
-          <Header />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Header />
+          </Suspense>
           {children}
         </Providers>
 
