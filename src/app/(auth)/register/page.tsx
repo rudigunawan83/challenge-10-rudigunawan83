@@ -9,7 +9,9 @@ import { Eye, EyeOff } from "lucide-react"
 import { registerUser } from "@/lib/api"
 import { useRouter } from "next/navigation"
 
-export default function RegisterPage() {
+import { Suspense } from "react"
+
+function RegisterForm() {
   const router = useRouter()
 
   const [form, setForm] = useState({
@@ -180,5 +182,13 @@ export default function RegisterPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RegisterForm />
+    </Suspense>
   )
 }

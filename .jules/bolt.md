@@ -1,0 +1,3 @@
+## 2024-05-24 - Preventing N+1 Queries in Hidden Modals
+**Learning:** React Query hooks inside hidden modal components that are rendered within list items (like `BlogCard`) will fetch data immediately on mount for every list item, causing massive N+1 API requests on page load if the `enabled` option doesn't check the modal's `open` state.
+**Action:** Always verify that `useQuery` inside modal components explicitly includes the modal's `open` prop in its `enabled` condition (e.g., `enabled: open && ...`). This prevents N+1 request waterfalls on page load while keeping the modal always mounted for CSS exit animations.
