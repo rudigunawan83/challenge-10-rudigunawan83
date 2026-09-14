@@ -1,0 +1,4 @@
+## 2025-02-28 - [High] Cross-Site Scripting (XSS) in dangerouslySetInnerHTML
+**Vulnerability:** The `src/app/blogs/[id]/page.tsx` component was rendering blog post content using `dangerouslySetInnerHTML={{ __html: post.content }}` without any prior sanitization, leading to a critical XSS vulnerability.
+**Learning:** React requires explicit warning (via the `dangerouslySetInnerHTML` prop) when rendering raw HTML, but it does not sanitize the content automatically. If the content is user-generated or comes from an API, it can include malicious scripts. We used `isomorphic-dompurify` to safely sanitize the HTML in a server-side rendered (Next.js) environment.
+**Prevention:** Always sanitize any dynamic HTML content before rendering it with `dangerouslySetInnerHTML`, utilizing libraries like `isomorphic-dompurify` or `dompurify` based on the context (SSR vs client-side).
