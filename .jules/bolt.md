@@ -1,0 +1,3 @@
+## 2024-05-18 - Next.js Build Requirements
+**Learning:** `npm run build` in Next.js will crash if types are not perfectly aligned, or if dynamic functions like `useSearchParams` are used without `Suspense` wrapping during static generation, even if those parts aren't the primary focus of optimization. Fixing them temporarily is required to verify the build, but they should be undone/reverted if they bloat the PR, unless fixing them is part of the feature. Also, running `npm install` creates diffs in `package-lock.json` that must be discarded to avoid lockfile churn.
+**Action:** Revert changes in irrelevant files (e.g., `package-lock.json`, pre-existing build errors) before final commit/PR to keep optimizations isolated and clean.
