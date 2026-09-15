@@ -72,5 +72,7 @@ export type BlogPost = {
   author: {
     id: number
     name: string
+    avatarUrl?: string
+    headline?: string
   }
 }
