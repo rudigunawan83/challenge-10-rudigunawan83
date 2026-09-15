@@ -8,8 +8,9 @@ import { useState } from "react"
 import { useAuth } from "@/app/providers"
 import BeforeLogin from "./BeforeLogin"
 import AfterLogin from "./AfterLogin"
+import { Suspense } from "react"
 
-export default function Header() {
+function HeaderContent() {
   const { isAuthenticated } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -24,8 +25,7 @@ export default function Header() {
   }
 
   return (
-    <header className="border-b bg-white">
-      <div className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-4">
+    <>
         {/* LOGO */}
         <Link
           href="/blogs"
@@ -62,6 +62,17 @@ export default function Header() {
         <div className="shrink-0">
           {isAuthenticated ? <AfterLogin /> : <BeforeLogin />}
         </div>
+    </>
+  )
+}
+
+export default function Header() {
+  return (
+    <header className="border-b bg-white">
+      <div className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-4">
+        <Suspense fallback={<div className="h-10 w-full" />}>
+          <HeaderContent />
+        </Suspense>
       </div>
     </header>
   )
