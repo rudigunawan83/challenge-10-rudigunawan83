@@ -11,7 +11,9 @@ import {
 } from "@/lib/api"
 import type { BlogPost, PaginatedResponse } from "@/types/blog"
 
-export default function BlogsPage() {
+import { Suspense } from "react"
+
+function BlogsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -98,7 +100,7 @@ export default function BlogsPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl gap-8 px-6 py-8">
+    <>
       {/* LEFT */}
       <section className="flex-1">
         <h1 className="mb-6 text-xl font-semibold">
@@ -160,6 +162,16 @@ export default function BlogsPage() {
           ))}
         </div>
       </aside>
+    </>
+  )
+}
+
+export default function BlogsPage() {
+  return (
+    <main className="mx-auto flex w-full max-w-7xl gap-8 px-6 py-8">
+      <Suspense fallback={<div>Loading blogs...</div>}>
+        <BlogsContent />
+      </Suspense>
     </main>
   )
 }

@@ -1,0 +1,3 @@
+## 2026-09-16 - Lazy Load Modal Data Fetching
+**Learning:** Hidden modal components rendered inside lists (like `StatisticModal` within `BlogCard`) can trigger massive N+1 network requests on page load if their internal `useQuery` hooks are not conditioned on the modal's `open` state. Conditionally rendering the modal wrapper breaks exit animations, so the query must be conditionally enabled instead.
+**Action:** Always include the modal's `open` boolean prop in the `enabled` options for any data-fetching hooks (e.g., `useQuery`) inside the modal to prevent unnecessary requests on parent list render.
