@@ -22,13 +22,15 @@ export default function StatisticModal({
   const { data: likes = [] } = useQuery({
     queryKey: ["post-likes", postId],
     queryFn: () => getPostLikes(postId as number),
-    enabled: !!postId && tab === "like",
+    // ⚡ Bolt Optimization: Only fetch when modal is open to prevent N+1 queries on list render
+    enabled: !!postId && tab === "like" && open,
   })
 
   const { data: comments = [] } = useQuery({
     queryKey: ["post-comments", postId],
     queryFn: () => getPostComments(postId as number),
-    enabled: !!postId && tab === "comment",
+    // ⚡ Bolt Optimization: Only fetch when modal is open to prevent N+1 queries on list render
+    enabled: !!postId && tab === "comment" && open,
   })
 
   if (!open) return null
