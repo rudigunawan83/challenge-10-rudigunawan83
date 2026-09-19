@@ -1,0 +1,5 @@
+## 2024-03-22 - XSS Vulnerability in Blog Detail Page
+
+**Vulnerability:** Cross-Site Scripting (XSS) vulnerability found in `src/app/blogs/[id]/page.tsx` where user-generated HTML content (blog posts) was being rendered using `dangerouslySetInnerHTML={{ __html: post.content }}` without any sanitization.
+**Learning:** React's `dangerouslySetInnerHTML` bypasses its built-in XSS protection. When rendering user-submitted HTML directly, it opens the application up to stored XSS attacks if the backend does not sanitize the content before saving or returning it.
+**Prevention:** Always sanitize HTML content coming from the server (or user input) before rendering it with `dangerouslySetInnerHTML`. In Next.js/React SSR environments, `isomorphic-dompurify` should be used instead of standard `dompurify` to prevent build/hydration errors and safely sanitize content on both client and server.
