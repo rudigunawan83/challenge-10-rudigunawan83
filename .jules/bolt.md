@@ -1,0 +1,3 @@
+## 2024-09-20 - Prevent N+1 API Requests in Hidden Modals
+**Learning:** In list views where each item renders a hidden modal (e.g. `StatisticModal`), `useQuery` hooks inside the modal can trigger massive N+1 API requests on page load if they aren't explicitly gated.
+**Action:** When optimizing hidden modals in lists, do NOT conditionally render the modal wrapper (e.g., `{isOpen && <Modal open={isOpen} />}`) as it can break UI exit animations. Instead, prevent N+1 requests by verifying that any internal data-fetching (like `useQuery`) explicitly requires the modal to be open (`enabled: isOpen && ...`).
