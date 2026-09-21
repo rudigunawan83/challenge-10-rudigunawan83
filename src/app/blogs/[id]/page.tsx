@@ -105,7 +105,7 @@ export default function BlogDetailPage() {
         {/* AUTHOR */}
         <div className="flex items-center gap-3 text-sm text-gray-500">
           <img
-            src={post.author.avatarUrl || "/avatar-placeholder.png"}
+            src={"avatarUrl" in post.author ? post.author.avatarUrl as string : "/avatar-placeholder.png"}
             className="h-8 w-8 rounded-full object-cover"
           />
           <span className="font-medium text-gray-700">
