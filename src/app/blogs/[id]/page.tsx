@@ -15,6 +15,7 @@ import { useAuth } from "@/app/providers"
 import CommentsModal from "@/components/blog/CommentsModal"
 import { ThumbsUp, MessageCircle } from "lucide-react"
 import toast from "react-hot-toast"
+import DOMPurify from "isomorphic-dompurify"
 
 export default function BlogDetailPage() {
   const { id } = useParams()
@@ -105,7 +106,7 @@ export default function BlogDetailPage() {
         {/* AUTHOR */}
         <div className="flex items-center gap-3 text-sm text-gray-500">
           <img
-            src={post.author.avatarUrl || "/avatar-placeholder.png"}
+            src={(post.author as any).avatarUrl || "/avatar-placeholder.png"}
             className="h-8 w-8 rounded-full object-cover"
           />
           <span className="font-medium text-gray-700">
@@ -138,9 +139,10 @@ export default function BlogDetailPage() {
         )}
 
         {/* CONTENT */}
+        {/* 🛡️ Sentinel: Sanitize user-provided HTML before rendering to prevent XSS */}
         <article
           className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
 
         {/* ================= COMMENTS ================= */}
