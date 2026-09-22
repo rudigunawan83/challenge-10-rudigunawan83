@@ -1,6 +1,7 @@
 "use client"
 
 import { useSearchParams, useRouter } from "next/navigation"
+import { Suspense } from "react"
 import { useQuery } from "@tanstack/react-query"
 import BlogCard from "@/components/blog/BlogCard"
 import MostLikedCard from "@/components/blog/MostLikedCard"
@@ -11,7 +12,7 @@ import {
 } from "@/lib/api"
 import type { BlogPost, PaginatedResponse } from "@/types/blog"
 
-export default function BlogsPage() {
+function BlogsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -71,7 +72,7 @@ export default function BlogsPage() {
     postsData.data.length === 0
   ) {
     return (
-      <main className="flex min-h-[70vh] flex-col items-center justify-center gap-6 text-center">
+      <div className="flex min-h-[70vh] flex-col items-center justify-center gap-6 text-center w-full">
         <img
           src="/empty-posts.svg"
           alt="No results"
@@ -93,12 +94,12 @@ export default function BlogsPage() {
         >
           Back to Home
         </button>
-      </main>
+      </div>
     )
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl gap-8 px-6 py-8">
+    <>
       {/* LEFT */}
       <section className="flex-1">
         <h1 className="mb-6 text-xl font-semibold">
@@ -149,7 +150,7 @@ export default function BlogsPage() {
       </section>
 
       {/* RIGHT */}
-      <aside className="w-80 border-l pl-6">
+      <aside className="w-80 border-l pl-6 hidden md:block">
         <h2 className="mb-4 font-semibold">
           Most Liked
         </h2>
@@ -160,6 +161,16 @@ export default function BlogsPage() {
           ))}
         </div>
       </aside>
+    </>
+  )
+}
+
+export default function BlogsPage() {
+  return (
+    <main className="mx-auto flex w-full max-w-7xl gap-8 px-6 py-8">
+      <Suspense fallback={<div className="flex-1 text-center py-10">Loading blogs...</div>}>
+        <BlogsContent />
+      </Suspense>
     </main>
   )
 }
