@@ -19,16 +19,18 @@ export default function StatisticModal({
 }: Props) {
   const [tab, setTab] = useState<"like" | "comment">("like")
 
+  // ⚡ Bolt Optimization: Only fetch data when modal is open to prevent N+1 API calls on page load
   const { data: likes = [] } = useQuery({
     queryKey: ["post-likes", postId],
     queryFn: () => getPostLikes(postId as number),
-    enabled: !!postId && tab === "like",
+    enabled: open && !!postId && tab === "like",
   })
 
+  // ⚡ Bolt Optimization: Only fetch data when modal is open to prevent N+1 API calls on page load
   const { data: comments = [] } = useQuery({
     queryKey: ["post-comments", postId],
     queryFn: () => getPostComments(postId as number),
-    enabled: !!postId && tab === "comment",
+    enabled: open && !!postId && tab === "comment",
   })
 
   if (!open) return null
