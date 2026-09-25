@@ -1,0 +1,4 @@
+## 2025-02-14 - Fix Stored XSS in Blog Post Rendering
+**Vulnerability:** The application was vulnerable to Stored Cross-Site Scripting (XSS) because user-provided HTML content (`post.content`) was rendered directly into the DOM using React's `dangerouslySetInnerHTML` in `src/app/blogs/[id]/page.tsx` without prior sanitization.
+**Learning:** Bypassing React's built-in XSS protection with `dangerouslySetInnerHTML` should only be done for trusted content. If the content is from a user (like blog posts), it must be sanitized. For Server-Side Rendering (SSR) environments like Next.js, standard DOMPurify won't work on the server as it requires a DOM; `isomorphic-dompurify` must be used.
+**Prevention:** Always wrap variables passed to `dangerouslySetInnerHTML` with `DOMPurify.sanitize()` (using `isomorphic-dompurify` in SSR contexts) unless the input is strictly controlled and known to be safe.
