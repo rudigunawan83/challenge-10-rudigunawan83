@@ -1,0 +1,3 @@
+## 2025-02-12 - Prevent massive N+1 API requests from hidden modals in lists
+**Learning:** When a component is rendered in a list and contains a hidden modal with data-fetching logic (e.g. `StatisticModal` inside `BlogCard`), failing to tie the data fetching condition to the modal's `open` state causes massive N+1 requests on page load. Attempting to conditionally render the modal wrapper (`{isOpen && <Modal />}`) can break UI animations that rely on the `open` prop.
+**Action:** Prevent these massive API requests by adding the modal's `open` prop into any `useQuery`'s `enabled` condition (e.g., `enabled: open && !!postId`). This keeps the component rendered for animations but delays fetching until the modal is actually opened.
