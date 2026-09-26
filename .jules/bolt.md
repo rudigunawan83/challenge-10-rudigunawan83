@@ -1,0 +1,3 @@
+## 2024-09-26 - Optimizing Data Fetching in Hidden Modals
+**Learning:** Conditionally rendering modal wrappers (e.g., `{isOpen && <Modal />}`) can break UI exit animations in this codebase. However, passing `isOpen` and failing to gate internal data fetching (e.g., `useQuery` without checking `enabled: isOpen`) leads to massive N+1 API requests on initial page load when lists of items with individual modals are rendered.
+**Action:** Always prevent aggressive pre-fetching in hidden modals by utilizing `enabled: isOpen && ...` in `useQuery` hooks instead of conditionally rendering the entire modal component.
