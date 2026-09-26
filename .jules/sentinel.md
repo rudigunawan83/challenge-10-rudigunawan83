@@ -1,0 +1,4 @@
+## 2025-02-14 - Fix Cross-Site Scripting (XSS) Vulnerability in Blog Detail Page
+**Vulnerability:** A Cross-Site Scripting (XSS) vulnerability was found in the blog detail page `src/app/blogs/[id]/page.tsx` because `dangerouslySetInnerHTML` was used directly with `post.content` without sanitization.
+**Learning:** `dangerouslySetInnerHTML` passes unsanitized data directly to the DOM. If malicious users inject `<script>` tags or malicious event handlers into `post.content` in the backend database, it can be executed in the victim's browser. In a Next.js App Router context (SSR), a specialized DOMPurify variant that works in Node.js, `isomorphic-dompurify`, is needed to prevent build issues or errors when the code runs server-side.
+**Prevention:** Always sanitize any dynamic or user-generated HTML content before rendering it using `dangerouslySetInnerHTML`. Using `isomorphic-dompurify` prevents XSS without breaking the build during static generation.
