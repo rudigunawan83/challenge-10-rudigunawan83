@@ -4,12 +4,20 @@ import Link from "next/link"
 import Image from "next/image"
 import { Search } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { useAuth } from "@/app/providers"
 import BeforeLogin from "./BeforeLogin"
 import AfterLogin from "./AfterLogin"
 
 export default function Header() {
+  return (
+    <Suspense fallback={<header className="border-b bg-white"><div className="mx-auto flex max-w-7xl h-[73px]" /></header>}>
+      <HeaderContent />
+    </Suspense>
+  )
+}
+
+function HeaderContent() {
   const { isAuthenticated } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
