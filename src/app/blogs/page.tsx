@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import BlogCard from "@/components/blog/BlogCard"
@@ -12,6 +13,14 @@ import {
 import type { BlogPost, PaginatedResponse } from "@/types/blog"
 
 export default function BlogsPage() {
+  return (
+    <Suspense fallback={<main className="mx-auto flex w-full max-w-7xl gap-8 px-6 py-8">Loading...</main>}>
+      <BlogsContent />
+    </Suspense>
+  )
+}
+
+function BlogsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
