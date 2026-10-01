@@ -1,0 +1,3 @@
+## 2024-10-01 - Hidden modals in lists causing N+1 API requests
+**Learning:** React components (like Modals) rendered in a list map can trigger massive N+1 API requests on page load if their internal data-fetching (like `useQuery`) is solely dependent on a `postId` or similar prop, even if the modal is visually hidden (`if (!open) return null`). Do not conditionally render the modal wrapper itself (e.g., `{isOpen && <Modal open={isOpen} />}`) as it breaks UI exit animations that depend on the `open` prop.
+**Action:** When optimizing hidden modals in lists, solely prevent N+1 API requests on page load by verifying that any internal data-fetching explicitly requires the modal to be open (e.g., `enabled: open && !!postId`).
