@@ -1,0 +1,3 @@
+## 2024-10-04 - Next.js Build Requirements
+**Learning:** Next.js build errors for missing `<Suspense>` boundaries around components using `useSearchParams` can unexpectedly block PR tests, and require wrapping the entire client component's contents.
+**Action:** Always run `npm run build` locally in Next.js projects after changes, as `npm run lint` won't catch these static generation CSR bailout errors.
