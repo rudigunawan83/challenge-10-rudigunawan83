@@ -1,0 +1,4 @@
+## 2025-02-14 - Prevent XSS in Next.js Server Components
+**Vulnerability:** A cross-site scripting (XSS) vulnerability was found in `src/app/blogs/[id]/page.tsx` where user-provided post content was rendered via React's `dangerouslySetInnerHTML={{ __html: post.content }}` without proper sanitization.
+**Learning:** `dangerouslySetInnerHTML` directly injects unsanitized HTML into the DOM, leaving the application vulnerable to script injection if the content source is untrusted or user-generated. Standard stripping of HTML tags regex (e.g. `/<[^>]*>/g`) is typically insufficient and fragile. Furthermore, importing standard DOMPurify can cause issues in Next.js SSR or App Router contexts because DOM elements don't exist on the server.
+**Prevention:** Use an established security library specifically designed for isomorphic/SSR environments, such as `isomorphic-dompurify`. Always sanitize variables passed to `dangerouslySetInnerHTML` using `DOMPurify.sanitize()`.
