@@ -1,0 +1,4 @@
+## 2025-02-27 - Fix XSS Vulnerability in Blog Posts Content
+**Vulnerability:** The application was directly rendering unsanitized user-generated content from blog posts (`post.content`) using React's `dangerouslySetInnerHTML`. This represents a Cross-Site Scripting (XSS) vulnerability.
+**Learning:** Next.js Server-Side Rendering (SSR) applications and React components require specialized HTML sanitizers. `isomorphic-dompurify` must be used instead of standard `dompurify` in a Next.js / SSR environment to prevent build-time/run-time breaking bugs and safely sanitize raw HTML before insertion.
+**Prevention:** Any usage of `dangerouslySetInnerHTML` containing user-controlled or database-sourced HTML strings must be wrapped with a robust isomorphic sanitizer like `isomorphic-dompurify` (via `DOMPurify.sanitize(...)`) before being rendered to mitigate XSS risks.
