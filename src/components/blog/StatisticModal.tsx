@@ -19,16 +19,22 @@ export default function StatisticModal({
 }: Props) {
   const [tab, setTab] = useState<"like" | "comment">("like")
 
+  // ⚡ Bolt Performance Optimization:
+  // We added `&& open` to the `enabled` condition.
+  // Why: This modal is rendered for every post in lists (e.g. on /blogs).
+  // Without this, it fetches likes and comments for EVERY post immediately on page load, causing a massive N+1 API request issue.
+  // Impact: Reduces initial API requests by O(N) where N is the number of posts on the screen.
   const { data: likes = [] } = useQuery({
     queryKey: ["post-likes", postId],
     queryFn: () => getPostLikes(postId as number),
-    enabled: !!postId && tab === "like",
+    enabled: !!postId && tab === "like" && open,
   })
 
+  // ⚡ Bolt Performance Optimization: Only fetch comments when the modal is actually open
   const { data: comments = [] } = useQuery({
     queryKey: ["post-comments", postId],
     queryFn: () => getPostComments(postId as number),
-    enabled: !!postId && tab === "comment",
+    enabled: !!postId && tab === "comment" && open,
   })
 
   if (!open) return null
