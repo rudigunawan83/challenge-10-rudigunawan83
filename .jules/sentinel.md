@@ -1,0 +1,4 @@
+## 2024-03-24 - Cross-Site Scripting (XSS) in Blog Post Rendering
+**Vulnerability:** The blog detail page (`src/app/blogs/[id]/page.tsx`) renders user-generated blog post content directly using `dangerouslySetInnerHTML={{ __html: post.content }}` without any sanitization.
+**Learning:** React's `dangerouslySetInnerHTML` bypasses its built-in XSS protections. When rendering HTML content fetched from an API (like blog posts), if the API doesn't sanitize the content, or if the content has been maliciously modified, executing scripts embedded within that content is possible.
+**Prevention:** Always use a robust HTML sanitizer like `isomorphic-dompurify` (for Next.js SSR compatibility) to clean HTML content before passing it to `dangerouslySetInnerHTML`.
