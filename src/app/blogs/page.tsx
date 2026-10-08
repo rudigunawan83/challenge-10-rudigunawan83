@@ -10,8 +10,9 @@ import {
   searchPosts,
 } from "@/lib/api"
 import type { BlogPost, PaginatedResponse } from "@/types/blog"
+import { Suspense } from "react"
 
-export default function BlogsPage() {
+function BlogsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -161,5 +162,13 @@ export default function BlogsPage() {
         </div>
       </aside>
     </main>
+  )
+}
+
+export default function BlogsPage() {
+  return (
+    <Suspense fallback={<div className="mx-auto flex max-w-6xl gap-8 px-6 py-8">Loading...</div>}>
+      <BlogsContent />
+    </Suspense>
   )
 }
