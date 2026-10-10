@@ -1,0 +1,4 @@
+## 2024-10-10 - Fix XSS Vulnerability in Blog Post Rendering
+**Vulnerability:** XSS (Cross-Site Scripting) vulnerability when rendering blog post content via `dangerouslySetInnerHTML` directly using unsanitized user-provided HTML content.
+**Learning:** Using `dangerouslySetInnerHTML` without proper sanitization allows arbitrary scripts injected into blog posts to be executed on the client-side. The usage of `isomorphic-dompurify` provides a safe way to clean HTML content in an SSR environment like Next.js App Router without breaking the build due to server-side mismatch.
+**Prevention:** Always sanitize user-generated HTML content before passing it to `dangerouslySetInnerHTML` using libraries like `isomorphic-dompurify`. Avoid trusting raw HTML from API endpoints directly.
