@@ -11,7 +11,9 @@ import {
 } from "@/lib/api"
 import type { BlogPost, PaginatedResponse } from "@/types/blog"
 
-export default function BlogsPage() {
+import { Suspense } from "react"
+
+function BlogsPageContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -161,5 +163,13 @@ export default function BlogsPage() {
         </div>
       </aside>
     </main>
+  )
+}
+
+export default function BlogsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BlogsPageContent />
+    </Suspense>
   )
 }
