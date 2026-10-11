@@ -10,8 +10,17 @@ import {
   searchPosts,
 } from "@/lib/api"
 import type { BlogPost, PaginatedResponse } from "@/types/blog"
+import { Suspense } from "react"
 
 export default function BlogsPage() {
+  return (
+    <Suspense fallback={<div className="p-10">Loading blogs...</div>}>
+      <BlogsContent />
+    </Suspense>
+  )
+}
+
+function BlogsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
