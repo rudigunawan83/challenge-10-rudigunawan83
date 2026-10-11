@@ -8,9 +8,9 @@ import { useState } from "react"
 import { useAuth } from "@/app/providers"
 import BeforeLogin from "./BeforeLogin"
 import AfterLogin from "./AfterLogin"
+import { Suspense } from "react"
 
-export default function Header() {
-  const { isAuthenticated } = useAuth()
+function SearchInput() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -22,6 +22,28 @@ export default function Header() {
     if (!query.trim()) return
     router.push(`/blogs?search=${encodeURIComponent(query)}&page=1`)
   }
+
+  return (
+    <form
+      onSubmit={handleSearch}
+      className="relative mx-auto w-full max-w-md"
+    >
+      <Search
+        size={18}
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+      />
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search"
+        className="w-full rounded-full border px-11 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+      />
+    </form>
+  )
+}
+
+export default function Header() {
+  const { isAuthenticated } = useAuth()
 
   return (
     <header className="border-b bg-white">
@@ -42,21 +64,9 @@ export default function Header() {
         </Link>
 
         {/* SEARCH */}
-        <form
-          onSubmit={handleSearch}
-          className="relative mx-auto w-full max-w-md"
-        >
-          <Search
-            size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-          />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search"
-            className="w-full rounded-full border px-11 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
-        </form>
+        <Suspense fallback={<div className="relative mx-auto w-full max-w-md h-10 border rounded-full"></div>}>
+          <SearchInput />
+        </Suspense>
 
         {/* AUTH */}
         <div className="shrink-0">
