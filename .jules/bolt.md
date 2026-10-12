@@ -1,0 +1,3 @@
+## 2025-03-09 - N+1 API Requests in Hidden React Modals
+**Learning:** In Next.js/React lists where each item renders its own modal, if the modal uses internal data fetching (like `useQuery`) that isn't dependent on the modal's `open` state, the application will fire N+1 requests on page load for all hidden modals.
+**Action:** When optimizing modals in lists, do NOT conditionally render the modal wrapper (e.g., `{isOpen && <Modal open={isOpen} />}`) as it can break exit animations that rely on the `open` prop. Instead, solely prevent the N+1 API requests by verifying that any internal data-fetching explicitly requires the modal to be open (`enabled: isOpen && ...`).
