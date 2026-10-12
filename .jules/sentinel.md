@@ -1,0 +1,4 @@
+## 2025-02-28 - Cross-Site Scripting (XSS) via dangerouslySetInnerHTML
+**Vulnerability:** A critical Cross-Site Scripting (XSS) vulnerability was found in the `src/app/blogs/[id]/page.tsx` file, where the blog post content (`post.content`) was being directly passed to `dangerouslySetInnerHTML` without any sanitization.
+**Learning:** React's `dangerouslySetInnerHTML` is inherently dangerous as it bypasses normal XSS protections. Directly rendering unverified/untrusted data can allow malicious scripts to be executed in the user's browser, leading to potential data theft, session hijacking, or other security compromises.
+**Prevention:** Always sanitize any user-controlled content before rendering it with `dangerouslySetInnerHTML`. In Next.js (App Router), `isomorphic-dompurify` should be used as it provides safe DOM sanitization on both the server and the client, preventing XSS payloads while preserving safe HTML formatting.
