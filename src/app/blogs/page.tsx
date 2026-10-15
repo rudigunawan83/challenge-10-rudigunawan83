@@ -2,6 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
+import { Suspense } from "react"
 import BlogCard from "@/components/blog/BlogCard"
 import MostLikedCard from "@/components/blog/MostLikedCard"
 import {
@@ -11,7 +12,7 @@ import {
 } from "@/lib/api"
 import type { BlogPost, PaginatedResponse } from "@/types/blog"
 
-export default function BlogsPage() {
+function BlogsPageContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -161,5 +162,13 @@ export default function BlogsPage() {
         </div>
       </aside>
     </main>
+  )
+}
+
+export default function BlogsPage() {
+  return (
+    <Suspense fallback={<div>Loading blogs...</div>}>
+      <BlogsPageContent />
+    </Suspense>
   )
 }
