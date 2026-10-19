@@ -1,5 +1,5 @@
 import { ThumbsUp, MessageCircle } from "lucide-react"
-import { MostLikedPost } from "@/lib/api"
+import { BlogPost as MostLikedPost } from "@/types/blog"
 import dayjs from "dayjs"
 
 type Props = {
