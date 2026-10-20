@@ -1,0 +1,3 @@
+## 2024-10-20 - Prevent N+1 Requests in Hidden Modals
+**Learning:** When using React Query (`useQuery`) inside modal components that are rendered within lists (like `BlogCard` rendering `StatisticModal`), the queries will execute immediately for every item in the list if they only depend on the ID. This causes a massive N+1 API request problem on page load. You shouldn't conditionally render the modal wrapper (e.g. `{isOpen && <Modal />}`) as it can break UI exit animations that rely on the `open` prop.
+**Action:** Always include the modal's visibility state (`open` prop) in the `enabled` condition of `useQuery` (e.g., `enabled: open && !!id`) to defer the API request until the modal is actually opened.
