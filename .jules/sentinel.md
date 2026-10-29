@@ -1,0 +1,4 @@
+## 2024-05-24 - Fix XSS Vulnerability in Blog Details
+**Vulnerability:** Found `dangerouslySetInnerHTML={{ __html: post.content }}` used without sanitization in Next.js App Router Server-Side Rendering context (`src/app/blogs/[id]/page.tsx`). This allows stored Cross-Site Scripting (XSS) if blog content contains malicious payloads.
+**Learning:** Next.js App Router applications require sanitization for any user-generated content rendered via `dangerouslySetInnerHTML`. Because the code runs both on the server and client, standard `dompurify` can cause issues. The `isomorphic-dompurify` package is explicitly needed to handle both environments safely.
+**Prevention:** Always wrap variables passed to `dangerouslySetInnerHTML` in an isomorphic sanitizer when the input may originate from users. Never assume API-provided rich text data is safe.
