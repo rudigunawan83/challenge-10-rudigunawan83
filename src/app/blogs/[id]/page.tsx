@@ -15,6 +15,7 @@ import { useAuth } from "@/app/providers"
 import CommentsModal from "@/components/blog/CommentsModal"
 import { ThumbsUp, MessageCircle } from "lucide-react"
 import toast from "react-hot-toast"
+import DOMPurify from "isomorphic-dompurify"
 
 export default function BlogDetailPage() {
   const { id } = useParams()
@@ -138,9 +139,10 @@ export default function BlogDetailPage() {
         )}
 
         {/* CONTENT */}
+        {/* 🛡️ Sentinel: Sanitize HTML content to prevent XSS attacks */}
         <article
           className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
         />
 
         {/* ================= COMMENTS ================= */}
