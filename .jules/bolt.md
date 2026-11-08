@@ -1,0 +1,3 @@
+## 2025-10-24 - Frontend N+1 API Requests in Hidden Modals
+**Learning:** Found a major frontend N+1 performance bottleneck. Modals rendered inside list items (like `StatisticModal` inside `BlogCard`) were triggering their internal `useQuery` fetches on page load, even when hidden, because they only checked if `postId` existed.
+**Action:** When working with hidden modals inside list views, always ensure that data-fetching queries (e.g., `useQuery`) include the `open` or `isOpen` prop in their `enabled` condition (`enabled: open && ...`) to prevent unnecessary requests on mount. Avoid conditionally rendering the modal wrapper itself to preserve exit animations.
