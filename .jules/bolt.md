@@ -1,0 +1,3 @@
+## 2023-10-27 - Prevent N+1 API Requests in Hidden Modals
+**Learning:** In Next.js/React applications, rendering hidden modals inside list components (like `BlogCard`) can cause massive N+1 API requests on page load if the internal data-fetching (like `useQuery`) doesn't explicitly require the modal to be open. We should not conditionally render the modal wrapper itself to avoid breaking exit animations, but the queries must check the `open` state.
+**Action:** Always verify that data fetching inside a modal uses the `open` prop in its `enabled` condition (e.g., `enabled: !!id && open`) to prevent premature fetching when the modal is mounted but hidden.
